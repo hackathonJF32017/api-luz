@@ -30,8 +30,8 @@ class Auth {
             } else {
                 return $response->withJson([
                     'error' => '002',
-                    'message' => 'Session timeout'
-                ], 408);
+                    'message' => 'Session timeout, expired token'
+                ], 400);
             }
         } else {
             return $response->withJson([
