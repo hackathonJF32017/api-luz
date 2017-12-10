@@ -8,6 +8,8 @@ class Comentario extends \Model {
     public $timestamps = false;
     protected $primaryKey = 'co_comentario';
 
+    protected $appends = ['totalApoios'];
+
     public function ideia() {
         return $this->belongsTo('Models\Ideia', 'co_ideia');
     }
@@ -18,6 +20,10 @@ class Comentario extends \Model {
 
     public function apoios() {
         return $this->hasMany('Models\Apoio', 'co_comentario');
+    }
+
+    public function getTotalApoiosAttribute() {
+        return $this->apoios->count();
     }
 
 }

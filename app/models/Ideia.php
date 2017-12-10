@@ -8,6 +8,8 @@ class Ideia extends \Model {
     public $timestamps = false;
     protected $primaryKey = 'co_ideia';
 
+    protected $appends = ['totalApoios'];
+
     public function usuario() {
         return $this->belongsTo('Models\Usuario', 'co_usuario');
     }
@@ -20,8 +22,16 @@ class Ideia extends \Model {
         return $this->hasMany('Models\Comentario', 'co_ideia');
     }
 
+    public function apoios() {
+        return $this->hasMany('Models\Apoio', 'co_ideia')->where('co_comentario', 0);
+    }
+
     public function usuarioResposta() {
         return $this->belongsTo('Models\Usuario', 'co_usuario_resposta');
+    }
+
+    public function getTotalApoiosAttribute() {
+        return $this->apoios->count();
     }
 
 }

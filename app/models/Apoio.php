@@ -8,6 +8,10 @@ class Apoio extends \Model {
     public $timestamps = false;
     protected $primaryKey = 'co_apoio';
 
+    public function ideia() {
+        return $this->belongsTo('Models\Ideia', 'co_ideia');
+    }
+
     public function comentario() {
         return $this->belongsTo('Models\Comentario', 'co_comentario');
     }

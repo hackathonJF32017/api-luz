@@ -14,14 +14,18 @@ class Apoios {
     
     public function create(Request $request, Response $response) {
 
-        $id = $request->getAttribute('comentario_id');
+        $id_ideia = $request->getAttribute('id');
+        $id_comentario = $request->getAttribute('comentario_id');
+
         $token = \Crypt::decrypt($_SERVER['HTTP_APP_TOKEN']);
-        
+
         $user  = Usuario::find($token['id']);
-        
-        $comentario = Comentario::find($id);
+
+        $ideia = Ideia::find($id_ideia);
+        $comentario = Comentario::find($id_comentario);
         if($comentario) {
             $apoio = new Apoio();
+            $apoio->ideia()->associate($ideia);
             $apoio->comentario()->associate($comentario);
             $apoio->usuario()->associate($user);
             if($apoio->save()) {
@@ -32,7 +36,6 @@ class Apoios {
                     'message' => 'Apoio create error'
                 ), 400);
             }
-            
         } else {
             return $response->withJson(array(
                 'error' => '000',
@@ -42,7 +45,35 @@ class Apoios {
 
     }
 
-    public function list(Request $request, Response $response) {
+    public function createFromIdeia(Request $request, Response $response) {
+        
+        $id_ideia = $request->getAttribute('id');
+
+        $token = \Crypt::decrypt($_SERVER['HTTP_APP_TOKEN']);
+        $user  = Usuario::find($token['id']);
+        $ideia = Ideia::find($id_ideia);
+
+        if($ideia) {
+            $apoio = new Apoio();
+            $apoio->ideia()->associate($ideia);
+            $apoio->usuario()->associate($user);
+            if($apoio->save()) {
+                return $response->withJson($apoio->toArray(), 200);
+            } else {
+                return $response->withJson(array(
+                    'error' => '000',
+                    'message' => 'Apoio create error'
+                ), 400);
+            }
+        } else {
+            return $response->withJson(array(
+                'error' => '000',
+                'message' => 'Ideia not found'
+            ), 400);
+        }
+    }
+
+    public function listByComment(Request $request, Response $response) {
         $id = $request->getAttribute("comentario_id");
         $comentario = Comentario::find($id);
         if($comentario) {
@@ -51,6 +82,19 @@ class Apoios {
             return $response->withJson(array(
                 'error' => '000',
                 'message' => 'Comentario not found'
+            ), 400);
+        }
+    }
+
+    public function listByIdeia(Request $request, Response $response) {
+        $id = $request->getAttribute("id");
+        $ideia = Ideia::find($id);
+        if($ideia) {
+            return $response->withJson($ideia->apoios->toArray(), 200);
+        } else {
+            return $response->withJson(array(
+                'error' => '000',
+                'message' => 'Ideia not found'
             ), 400);
         }
     }

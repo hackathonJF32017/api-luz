@@ -49,6 +49,7 @@ return function($route) {
         $route->post('/{id}', 'Controllers\Ideias:update');
         $route->delete('/{id}', 'Controllers\Ideias:remove');
 
+        $route->post('/{id}/apoios', 'Controllers\Apoios:createFromIdeia');
         $route->post('/{id}/resposta', 'Controllers\Ideias:resposta');
 
         $route->get('/{id}/comentarios', 'Controllers\Comentarios:list');
@@ -59,7 +60,7 @@ return function($route) {
             $route->post('/{comentario_id}', 'Controllers\Comentarios:update');
             $route->delete('/{comentario_id}', 'Controllers\Comentarios:remove');
 
-            $route->get('/{comentario_id}/apoios', 'Controllers\Apoios:list');
+            $route->get('/{comentario_id}/apoios', 'Controllers\Apoios:listByComment');
             $route->post('/{comentario_id}/apoios', 'Controllers\Apoios:create');
 
             $route->group('/{comentario_id}/apoios', function() use ($route) {
