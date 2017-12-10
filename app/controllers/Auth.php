@@ -32,7 +32,8 @@ class Auth {
                 $token = \Crypt::encrypt($data);
 
                 return $response->withJson(array(
-                    'token' => $token
+                    'token' => $token,
+                    'perfil' => $user->perfil->co_perfil
                 ), 200);
 
             } else {

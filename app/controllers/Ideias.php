@@ -37,14 +37,47 @@ class Ideias {
 
     public function list(Request $request, Response $response) {
         $ideias = Ideia::all();
-        return $response->withJson($ideias->toArray(), 200);
+        $ideias = $ideias->toArray();
+
+        usort($ideias, function($a, $b) {
+            if($a['totalApoios'] < $b['totalApoios']) {
+                return 1;
+            } elseif ($a['totalApoios'] == $b['totalApoios']) {
+                return 0;
+            } elseif ($a['totalApoios'] > $b['totalApoios']) {
+                return -1;
+            }
+        });
+
+        return $response->withJson($ideias, 200);
     }
 
     public function get(Request $request, Response $response) {
         $id = $request->getAttribute('id');
         $ideia = Ideia::find($id);
+
+        $setor = $ideia->setor;
+        $usuario = $ideia->usuario;
+        $usuarioResposta = $ideia->usuarioResposta;
+        $comentarios = $ideia->comentarios->toArray();
+
+        usort($comentarios, function($a, $b) {
+            if($a['totalApoios'] < $b['totalApoios']) {
+                return 1;
+            } elseif ($a['totalApoios'] == $b['totalApoios']) {
+                return 0;
+            } elseif ($a['totalApoios'] > $b['totalApoios']) {
+                return -1;
+            }
+        });
+
         if($ideia) {
-            return $response->withJson($ideia->toArray(), 200);
+            $ideia = $ideia->toArray();
+            $ideia['setor'] = $setor;
+            $ideia['usuario'] = $usuario;
+            $ideia['usuario_resposta'] = $usuarioResposta;
+            $ideia['comentarios'] = $comentarios;
+            return $response->withJson($ideia, 200);
         } else {
             return $response->withJson(array(
                 'error' => '000',

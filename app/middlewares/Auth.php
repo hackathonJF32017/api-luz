@@ -6,7 +6,7 @@ use Models\Usuario;
 
 class Auth {
 
-    private $timeSpitToken = 3600;
+    private $timeSpitToken = 3600 * 3600;
 
     public function __invoke($request, $response, $next) {
 
